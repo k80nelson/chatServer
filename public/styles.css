@@ -1,0 +1,53 @@
+h1{
+  margin: 40px;
+  text-align: center;
+}
+
+#container{
+  width: 60%;
+  background-color: pink;
+  margin: auto;
+}
+
+#msgs{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#msgs li{
+  padding: 5px 10px;
+}
+
+#userList{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#userList li{
+  padding: 5px 10px;
+}
+
+#chatLog{
+  width: 80%;
+  height: 450px;
+  float:left;
+  background-color: yellow;
+  overflow: auto;
+}
+
+#users{
+  background-color: green;
+  float:left;
+  width: 20%;
+  height:450px;
+}
+
+
+#inputText{
+  margin-top: 20px;
+  width:100%;
+  border:none;
+  background-color:blue;
+}
