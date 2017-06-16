@@ -30,10 +30,6 @@ io.on('connection', function(socket){
     socket.blockedBy = [];
     console.log(socket.user+ ' has connected.');
     sendUsers();
-  //  var users = getUsers();
-  //  users = JSON.stringify(users);
-  //  socket.emit('users', users);
-  //  socket.to('chat').emit('users', users);
     socket.emit('message', timeStamp()+' Welcome, '+socket.user+'!');
     socket.to('chat').emit('message', timeStamp()+' '+ socket.user+ ' has entered the chat.');
   });
@@ -41,14 +37,10 @@ io.on('connection', function(socket){
   socket.on('message', function(data){
     console.log('Recieved new message from '+socket.user+': '+data);
     sendAll(socket, data);
-  //  socket.emit('message', timeStamp()+' '+socket.user+': '+data);
-  //  socket.to('chat').emit('message', timeStamp()+' '+socket.user+': '+data);
+
   });
 
   socket.on('disconnect', function(){
-  //  var users = getUsers();
-  //  users = JSON.stringify(users);
-  //  socket.to('chat').emit('users', users);
     sendUsers();
     socket.to('chat').emit('message', timeStamp()+' '+ socket.user+ ' has left the chat.')
     console.log(socket.user+' has disconnected.');
