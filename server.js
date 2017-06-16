@@ -29,10 +29,11 @@ io.on('connection', function(socket){
     socket.blocked = [];
     socket.blockedBy = [];
     console.log(socket.user+ ' has connected.');
-    var users = getUsers(socket);
-    users = JSON.stringify(users);
-    socket.emit('users', users);
-    socket.to('chat').emit('users', users);
+    sendUsers();
+  //  var users = getUsers();
+  //  users = JSON.stringify(users);
+  //  socket.emit('users', users);
+  //  socket.to('chat').emit('users', users);
     socket.emit('message', timeStamp()+' Welcome, '+socket.user+'!');
     socket.to('chat').emit('message', timeStamp()+' '+ socket.user+ ' has entered the chat.');
   });
@@ -40,12 +41,15 @@ io.on('connection', function(socket){
   socket.on('message', function(data){
     console.log('Recieved new message from '+socket.user+': '+data);
     sendAll(socket, data);
+  //  socket.emit('message', timeStamp()+' '+socket.user+': '+data);
+  //  socket.to('chat').emit('message', timeStamp()+' '+socket.user+': '+data);
   });
 
   socket.on('disconnect', function(){
-    var users = getUsers(socket);
-    users = JSON.stringify(users);
-    socket.to('chat').emit('users', users);
+  //  var users = getUsers();
+  //  users = JSON.stringify(users);
+  //  socket.to('chat').emit('users', users);
+    sendUsers();
     socket.to('chat').emit('message', timeStamp()+' '+ socket.user+ ' has left the chat.')
     console.log(socket.user+' has disconnected.');
   });
@@ -55,9 +59,26 @@ io.on('connection', function(socket){
     blUser.blockedBy.push(socket.user);
     socket.blocked.push(blUser.user);
     console.log(blUser.user + ' was blocked by '+ socket.user)
-  })
+  });
 
 });
+
+function sendUsers(){
+  allClients = io.sockets.connected;
+  for (var id in allClients){
+    let currentUser = allClients[id];
+    let data = [];
+    for (var user in allClients){
+      let otherUser = allClients[user].user
+      if (currentUser.blocked.indexOf(otherUser) > -1){
+        data.push('<strike>'+otherUser+'</strike>');
+      }
+      else data.push(otherUser);
+    }
+    data = JSON.stringify(data);
+    currentUser.emit('users', data);
+  }
+}
 
 function sendAll(socket, msg){
   allClients = io.sockets.connected;
@@ -79,16 +100,11 @@ function findUser(data){
       return allClients[id];
 }
 
-function getUsers(socket){
+function getUsers(){
   allClients = io.sockets.connected;
   data = [];
   for (var id in allClients){
-    if (socket.blocked.indexOf(allClients[id].user) > -1){
-      data.push('<strike>'+allClients[id].user+'</strike>');
-    }
-    else{
-      data.push(allClients[id].user);
-    }
+    data.push(allClients[id].user);
   }
   return data;
 }
